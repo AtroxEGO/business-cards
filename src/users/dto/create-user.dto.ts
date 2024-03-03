@@ -1,3 +1,4 @@
+import { createZodDto } from '@anatine/zod-nestjs';
 import { z } from 'zod';
 
 const passwordRegex =
@@ -21,4 +22,8 @@ export const createUserSchema = z
     message: 'Passwords do not match',
   });
 
-export type CreateUserDto = z.infer<typeof createUserSchema>;
+export class CreateUserDto extends createZodDto(createUserSchema) {}
+export const CreateUserResponseZ = z.object({
+  access_token: z.string(),
+});
+export class CreateUserResponseDto extends createZodDto(CreateUserResponseZ) {}

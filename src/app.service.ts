@@ -4,7 +4,7 @@ import { PrismaService } from './shared/services/prisma.service';
 @Injectable()
 export class AppService {
   constructor(private prismaService: PrismaService) {}
-  async checkHealth(): Promise<any> {
+  async checkHealth() {
     let status = 'ok';
     try {
       await this.prismaService.$executeRaw`SELECT 1`;

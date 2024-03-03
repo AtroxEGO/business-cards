@@ -6,9 +6,10 @@ import {
   Post,
   UsePipes,
 } from '@nestjs/common';
-import { LoginDto, loginSchema } from './dto/login.dto';
+import { LoginDto, LoginResponseDto, loginSchema } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
+import { ApiCreatedResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -16,6 +17,9 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
+  @ApiCreatedResponse({
+    type: LoginResponseDto,
+  })
   @UsePipes(new ValidationPipe(loginSchema))
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);

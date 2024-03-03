@@ -13,7 +13,7 @@ export class ValidationPipe implements PipeTransform {
       if (error instanceof ZodError) {
         const errors = error.flatten().fieldErrors;
         if (process.env.NODE_ENV === 'development') {
-          this.logger.log(errors);
+          this.logger.warn(errors);
         }
         throw new BadRequestException({ message: 'Validation Failed', errors });
       }

@@ -15,14 +15,13 @@ export class AuthService {
     const { email, password } = payload;
     const user = await this.prismaService.user.findUnique({ where: { email } });
 
-    if (await !bcrypt.compare(password, user.password)) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid Credentials');
     }
 
     const tokenPayload = {
       sub: user.id,
       email: user.email,
-      fullName: user.fullName,
     };
 
     return {

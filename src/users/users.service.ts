@@ -1,8 +1,14 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../shared/services/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { UserData } from './dto/user.interface';
 
 @Injectable()
 export class UsersService {
@@ -14,9 +20,7 @@ export class UsersService {
   ) {}
 
   async createUser(payload: CreateUserDto) {
-    this.logger.log('Processing new User');
-
-    const { fullName, email, password } = payload;
+    const { email, password } = payload;
 
     const userNotUnique = await this.prismaService.user.findUnique({
       where: { email },
@@ -35,14 +39,37 @@ export class UsersService {
     const createdUser = await this.prismaService.user.create({
       data: {
         email,
-        fullName,
         password: hashedPassword,
+        card: {
+          create: {
+            socials: {
+              create: {
+                socialName: 'email',
+                value: email,
+              },
+            },
+          },
+        },
       },
     });
+
+    this.logger.debug(`Created new user: ${email}`);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...tokenPayload } = createdUser;
 
     return { accessToken: await this.jwtService.signAsync(tokenPayload) };
+  }
+
+  async deleteUser(user: UserData) {
+    try {
+      await this.prismaService.user.delete({
+        where: { id: user.sub },
+      });
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
+
+    return { message: 'success' };
   }
 }
