@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../shared/services/prisma.service';
@@ -61,10 +62,12 @@ export class UsersService {
     return { accessToken: await this.jwtService.signAsync(tokenPayload) };
   }
 
-  async deleteUser(user: UserData) {
+  async deleteUser(user: UserData, id: string) {
+    if (user.sub !== id) throw new UnauthorizedException();
+
     try {
       await this.prismaService.user.delete({
-        where: { id: user.sub },
+        where: { id: id },
       });
     } catch (error) {
       throw new NotFoundException('User not found');

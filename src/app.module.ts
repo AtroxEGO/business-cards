@@ -7,6 +7,7 @@ import { PrismaService } from './shared/services/prisma.service';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { CardsModule } from './cards/cards.module';
 import { APP_GUARD } from '@nestjs/core';
+import { StorageService } from './shared/services/storage.service';
 
 @Global()
 @Module({
@@ -25,11 +26,12 @@ import { APP_GUARD } from '@nestjs/core';
   providers: [
     AppService,
     PrismaService,
+    StorageService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
   ],
-  exports: [PrismaService],
+  exports: [PrismaService, StorageService],
 })
 export class AppModule {}

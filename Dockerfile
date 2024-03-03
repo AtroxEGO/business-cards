@@ -5,8 +5,9 @@ WORKDIR /app
 COPY package.json ./
 
 RUN npm install
-RUN npx nest build
 
 COPY . .
+
+RUN npm run build
 
 CMD ["npm", "run", "start:prod"]

@@ -9,8 +9,9 @@ import {
 import { LoginDto, LoginResponseDto, loginSchema } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
-import { ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

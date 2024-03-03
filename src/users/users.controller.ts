@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Param,
   Post,
   UseGuards,
   UsePipes,
@@ -13,11 +14,12 @@ import {
   createUserSchema,
 } from './dto/create-user.dto';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
-import { ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { User } from '../users/dto/user.decorator';
 import { UserData } from './dto/user.interface';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -31,9 +33,10 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  @Delete()
+  @ApiBearerAuth('accessToken')
+  @Delete(':id')
   @UseGuards(AuthGuard)
-  async deleteUser(@User() user: UserData) {
-    return this.usersService.deleteUser(user);
+  async deleteUser(@User() user: UserData, @Param('id') id: string) {
+    return this.usersService.deleteUser(user, id);
   }
 }

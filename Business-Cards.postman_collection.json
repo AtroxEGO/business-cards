@@ -1,0 +1,294 @@
+{
+	"info": {
+		"_postman_id": "85b8a6c7-870a-4c44-87d1-42d78b662a98",
+		"name": "Business-Cards",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30719111"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"pm.collectionVariables.set('jwtToken', jsonData.accessToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"Paweł Polakiewicz\",\r\n    \"email\": \"email@example.com\",\r\n    \"password\": \"Example123!\",\r\n    \"confirm\": \"Example123!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"pm.collectionVariables.set('jwtToken', jsonData.accessToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"email@example.com\",\r\n    \"password\": \"Example123!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/auth/login",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cards",
+			"item": [
+				{
+					"name": "Get Card",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/cards/f445ab2c-ca67-4d68-8b20-f054bc237396",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"cards",
+								"f445ab2c-ca67-4d68-8b20-f054bc237396"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch Card",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "picture",
+									"type": "file",
+									"src": "/C:/Users/Pablo/Desktop/picture.jpg",
+									"disabled": true
+								},
+								{
+									"key": "fullName",
+									"value": "John Doe",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BaseURL}}/cards/f445ab2c-ca67-4d68-8b20-f054bc237396",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"cards",
+								"f445ab2c-ca67-4d68-8b20-f054bc237396"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch Socials",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"socials\": [\r\n        {\r\n            \"socialName\": \"email\",\r\n            \"value\": \"john@example.com\"\r\n        },\r\n        {\r\n            \"socialName\": \"facebook\",\r\n            \"value\": \"https://facebook.com\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/cards/f445ab2c-ca67-4d68-8b20-f054bc237396/socials",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"cards",
+								"f445ab2c-ca67-4d68-8b20-f054bc237396",
+								"socials"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Social",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"socialName\": \"facebooks\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/cards/f445ab2c-ca67-4d68-8b20-f054bc237396/socials",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"cards",
+								"f445ab2c-ca67-4d68-8b20-f054bc237396",
+								"socials"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "App Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseURL}}",
+					"host": [
+						"{{BaseURL}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwtToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseURL",
+			"value": "localhost:3000"
+		},
+		{
+			"key": "jwtToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
