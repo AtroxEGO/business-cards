@@ -7,6 +7,7 @@ import {
 import { FirebaseApp, initializeApp } from 'firebase/app';
 import {
   FirebaseStorage,
+  deleteObject,
   getDownloadURL,
   getStorage,
   ref,
@@ -46,6 +47,19 @@ export class StorageService implements OnModuleInit {
       return downloadURL;
     } catch {
       throw new InternalServerErrorException('File upload failed');
+    }
+  }
+
+  async deleteFile(folder: string, cardId: string) {
+    const path = `${folder}/${cardId}.jpg`;
+    const storageRef = ref(this.storage, path);
+
+    try {
+      await deleteObject(storageRef);
+
+      this.logger.debug(`Deleted file from ${path}`);
+    } catch {
+      throw new InternalServerErrorException('File deletion failed');
     }
   }
 }

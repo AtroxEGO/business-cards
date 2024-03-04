@@ -17,7 +17,16 @@
 							"script": {
 								"exec": [
 									"let jsonData = pm.response.json();\r",
-									"pm.collectionVariables.set('jwtToken', jsonData.accessToken);"
+									"let jwt = jsonData.accessToken\r",
+									"pm.collectionVariables.set('jwtToken', jwt);\r",
+									"\r",
+									"let [jwtHeader, jwtPayload, jwtSignature] = jwt.split('.')\r",
+									"\r",
+									"let jwtPayloadJsonString = atob(jwtPayload)\r",
+									"\r",
+									"let jwtPayloadJson = JSON.parse(jwtPayloadJsonString)\r",
+									"\r",
+									"pm.collectionVariables.set('loggedUserID', jwtPayloadJson.sub);"
 								],
 								"type": "text/javascript"
 							}
@@ -53,12 +62,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{BaseURL}}/users",
+							"raw": "{{BaseURL}}/users/{{loggedUserID}}",
 							"host": [
 								"{{BaseURL}}"
 							],
 							"path": [
-								"users"
+								"users",
+								"{{loggedUserID}}"
 							]
 						}
 					},
@@ -77,7 +87,16 @@
 							"script": {
 								"exec": [
 									"let jsonData = pm.response.json();\r",
-									"pm.collectionVariables.set('jwtToken', jsonData.accessToken);"
+									"let jwt = jsonData.accessToken\r",
+									"pm.collectionVariables.set('jwtToken', jwt);\r",
+									"\r",
+									"let [jwtHeader, jwtPayload, jwtSignature] = jwt.split('.')\r",
+									"\r",
+									"let jwtPayloadJsonString = atob(jwtPayload)\r",
+									"\r",
+									"let jwtPayloadJson = JSON.parse(jwtPayloadJsonString)\r",
+									"\r",
+									"pm.collectionVariables.set('loggedUserID', jwtPayloadJson.sub);"
 								],
 								"type": "text/javascript"
 							}
@@ -119,13 +138,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BaseURL}}/cards/f445ab2c-ca67-4d68-8b20-f054bc237396",
+							"raw": "{{BaseURL}}/cards/{{loggedUserID}}",
 							"host": [
 								"{{BaseURL}}"
 							],
 							"path": [
 								"cards",
-								"f445ab2c-ca67-4d68-8b20-f054bc237396"
+								"{{loggedUserID}}"
 							]
 						}
 					},
@@ -142,8 +161,7 @@
 								{
 									"key": "picture",
 									"type": "file",
-									"src": "/C:/Users/Pablo/Desktop/picture.jpg",
-									"disabled": true
+									"src": "/C:/Users/Pablo/Desktop/picture.jpg"
 								},
 								{
 									"key": "fullName",
@@ -153,13 +171,13 @@
 							]
 						},
 						"url": {
-							"raw": "{{BaseURL}}/cards/f445ab2c-ca67-4d68-8b20-f054bc237396",
+							"raw": "{{BaseURL}}/cards/{{loggedUserID}}",
 							"host": [
 								"{{BaseURL}}"
 							],
 							"path": [
 								"cards",
-								"f445ab2c-ca67-4d68-8b20-f054bc237396"
+								"{{loggedUserID}}"
 							]
 						}
 					},
@@ -180,13 +198,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{BaseURL}}/cards/f445ab2c-ca67-4d68-8b20-f054bc237396/socials",
+							"raw": "{{BaseURL}}/cards/{{loggedUserID}}/socials",
 							"host": [
 								"{{BaseURL}}"
 							],
 							"path": [
 								"cards",
-								"f445ab2c-ca67-4d68-8b20-f054bc237396",
+								"{{loggedUserID}}",
 								"socials"
 							]
 						}
@@ -208,13 +226,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{BaseURL}}/cards/f445ab2c-ca67-4d68-8b20-f054bc237396/socials",
+							"raw": "{{BaseURL}}/cards/{{loggedUserID}}/socials",
 							"host": [
 								"{{BaseURL}}"
 							],
 							"path": [
 								"cards",
-								"f445ab2c-ca67-4d68-8b20-f054bc237396",
+								"{{loggedUserID}}",
 								"socials"
 							]
 						}
@@ -225,21 +243,9 @@
 		},
 		{
 			"name": "App Status",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
 					"raw": "{{BaseURL}}",
 					"host": [
@@ -289,6 +295,10 @@
 			"key": "jwtToken",
 			"value": "",
 			"type": "string"
+		},
+		{
+			"key": "loggedUserID",
+			"value": ""
 		}
 	]
 }

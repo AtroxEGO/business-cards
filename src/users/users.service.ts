@@ -10,12 +10,14 @@ import { PrismaService } from '../shared/services/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserData } from './dto/user.interface';
+import { StorageService } from '../shared/services/storage.service';
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
   constructor(
+    private storageService: StorageService,
     private prismaService: PrismaService,
     private jwtService: JwtService,
   ) {}
@@ -57,15 +59,22 @@ export class UsersService {
     this.logger.debug(`Created new user: ${email}`);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _, ...tokenPayload } = createdUser;
+    const { password: _, id, ...tokenPayload } = createdUser;
 
-    return { accessToken: await this.jwtService.signAsync(tokenPayload) };
+    const accessToken = await this.jwtService.signAsync({
+      sub: id,
+      ...tokenPayload,
+    });
+
+    return { accessToken };
   }
 
   async deleteUser(user: UserData, id: string) {
     if (user.sub !== id) throw new UnauthorizedException();
 
     try {
+      await this.storageService.deleteFile('/avatars', id);
+
       await this.prismaService.user.delete({
         where: { id: id },
       });

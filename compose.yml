@@ -7,7 +7,7 @@ services:
       - '3000:3000'
     environment:
       NODE_ENV: ${NODE_ENV}
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: ${PRODUCTION_DATABASE_URL}
     depends_on:
       - postgres
     command: sh -c "npx prisma migrate dev --name dev && npm run start:prod"

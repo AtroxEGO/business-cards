@@ -47,6 +47,7 @@ export class CardsService {
       });
       return { message: 'success' };
     } catch (error) {
+      console.log(error);
       throw new Error('Failed to update card.');
     }
   }
