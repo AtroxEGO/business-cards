@@ -1,6 +1,7 @@
 services:
   backend:
     build: .
+    container_name: node
     restart: unless-stopped
     ports:
       - '3000:3000'
@@ -12,6 +13,7 @@ services:
     command: sh -c "npx prisma migrate dev --name dev && npm run start:prod"
   postgres:
     image: postgres
+    container_name: postgres
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

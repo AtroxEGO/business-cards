@@ -33,4 +33,4 @@ $ npm run start:prod
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This is [MIT licensed](LICENSE).
