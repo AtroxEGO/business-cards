@@ -21,6 +21,7 @@ export class AuthService {
 
     const tokenPayload = {
       sub: user.id,
+      slug: user.slug,
       email: user.email,
     };
 

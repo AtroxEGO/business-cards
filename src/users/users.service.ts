@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserData } from './dto/user.interface';
 import { StorageService } from '../shared/services/storage.service';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -38,11 +39,16 @@ export class UsersService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const uuid = randomUUID();
+    const hashedUuid = bcrypt.hashSync(uuid, 1);
+    const slug = hashedUuid.slice(0, 8);
 
     const createdUser = await this.prismaService.user.create({
       data: {
+        id: uuid,
         email,
         password: hashedPassword,
+        slug: slug,
         card: {
           create: {
             socials: {
