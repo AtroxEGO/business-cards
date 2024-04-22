@@ -9,9 +9,6 @@ const passwordComplexityMessage =
 
 export const createUserSchema = z
   .object({
-    fullName: z.string({
-      description: "User's full name",
-    }),
     email: z.string().email(),
     password: z.string().regex(passwordRegex, passwordComplexityMessage),
     confirm: z.string().regex(passwordRegex, passwordComplexityMessage),

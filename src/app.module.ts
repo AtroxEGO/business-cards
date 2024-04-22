@@ -16,8 +16,9 @@ import { StorageService } from './shared/services/storage.service';
     AuthModule,
     ThrottlerModule.forRoot([
       {
+        name: 'default',
         ttl: 60000,
-        limit: 10,
+        limit: 100,
       },
     ]),
     CardsModule,

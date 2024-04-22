@@ -21,12 +21,13 @@ export class AuthService {
 
     const tokenPayload = {
       sub: user.id,
-      slug: user.slug,
       email: user.email,
     };
 
     return {
-      accessToken: await this.jwtService.signAsync(tokenPayload),
+      accessToken: await this.jwtService.signAsync(tokenPayload, {
+        expiresIn: '1h',
+      }),
     };
   }
 }

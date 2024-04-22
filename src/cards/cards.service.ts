@@ -18,8 +18,9 @@ export class CardsService {
   ) {}
 
   async getCard(id: string) {
-    const cardData = await this.prismaService.card.findUnique({
-      where: { id: id },
+    const [cardData] = await this.prismaService.card.findMany({
+      take: 1,
+      where: { OR: [{ id: id }, { slug: id }] },
       include: { socials: { select: { socialName: true, value: true } } },
     });
 
@@ -40,12 +41,22 @@ export class CardsService {
 
     const photoUrl = await this.uploadCardPhoto(file, cardId);
 
+    const { socials, ...cardData } = body;
+
     try {
-      await this.prismaService.card.update({
+      const updatedCard = await this.prismaService.card.update({
         where: { id: user.sub },
-        data: { ...body, photoUrl },
+        data: {
+          ...cardData,
+          photoUrl,
+          socials: {
+            deleteMany: {},
+            createMany: { data: socials as any },
+          },
+        },
+        include: { socials: { select: { socialName: true, value: true } } },
       });
-      return { message: 'success' };
+      return { message: 'success', updatedCard };
     } catch (error) {
       console.log(error);
       throw new Error('Failed to update card.');

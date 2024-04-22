@@ -40,7 +40,7 @@ export class CardsController {
   @ApiBearerAuth('accessToken')
   @UseGuards(AuthGuard)
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('picture'))
+  @UseInterceptors(FileInterceptor('avatarFile'))
   patchCard(
     @Body(new ValidationPipe(patchCardSchema)) body: PatchCardDto,
     @User() user: UserData,
@@ -49,7 +49,7 @@ export class CardsController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 8000000 }),
-          new FileTypeValidator({ fileType: 'image/jpeg' }),
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
         ],
         fileIsRequired: false,
       }),

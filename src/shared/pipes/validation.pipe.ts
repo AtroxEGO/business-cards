@@ -11,6 +11,7 @@ export class ValidationPipe implements PipeTransform {
       return parsedValue;
     } catch (error) {
       if (error instanceof ZodError) {
+        console.log(error);
         const errors = error.flatten().fieldErrors;
         if (process.env.NODE_ENV === 'development') {
           this.logger.warn(errors);

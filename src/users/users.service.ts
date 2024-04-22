@@ -41,16 +41,16 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(password, 10);
     const uuid = randomUUID();
     const hashedUuid = bcrypt.hashSync(uuid, 1);
-    const slug = hashedUuid.slice(0, 8);
+    const slug = hashedUuid.slice(8, 16).replace(/[^\w\s-]/g, '');
 
     const createdUser = await this.prismaService.user.create({
       data: {
         id: uuid,
         email,
         password: hashedPassword,
-        slug: slug,
         card: {
           create: {
+            slug: slug,
             socials: {
               create: {
                 socialName: 'email',
@@ -67,10 +67,13 @@ export class UsersService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, id, ...tokenPayload } = createdUser;
 
-    const accessToken = await this.jwtService.signAsync({
-      sub: id,
-      ...tokenPayload,
-    });
+    const accessToken = await this.jwtService.signAsync(
+      {
+        sub: id,
+        ...tokenPayload,
+      },
+      { expiresIn: '60m' },
+    );
 
     return { accessToken };
   }
@@ -79,11 +82,11 @@ export class UsersService {
     if (user.sub !== id) throw new UnauthorizedException();
 
     try {
-      await this.storageService.deleteFile('/avatars', id);
-
       await this.prismaService.user.delete({
         where: { id: id },
       });
+
+      await this.storageService.deleteFile('/avatars', id);
     } catch (error) {
       throw new NotFoundException('User not found');
     }

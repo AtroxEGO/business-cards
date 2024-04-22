@@ -3,6 +3,15 @@ import { z } from 'zod';
 
 const invalidColorMessage = 'Musts be in HEX';
 
+export const AllowedSocials = [
+  'facebook',
+  'youtube',
+  'linkedin',
+  'instagram',
+  'email',
+  'website',
+] as const;
+
 export const patchCardSchema = z.object({
   fullName: z.ostring(),
   jobTitle: z.ostring(),
@@ -20,6 +29,15 @@ export const patchCardSchema = z.object({
       invalidColorMessage,
     ),
   bio: z.ostring(),
+  socials: z.array(
+    z.object({
+      socialName: z.enum(AllowedSocials),
+      value: z.union([
+        z.string().email('Invalid email.'),
+        z.string().url('Invalid link.'),
+      ]),
+    }),
+  ),
 });
 
 export class PatchCardDto extends createZodDto(patchCardSchema) {}
