@@ -8,6 +8,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { CardsModule } from './cards/cards.module';
 import { APP_GUARD } from '@nestjs/core';
 import { StorageService } from './shared/services/storage.service';
+import { ConfigModule } from '@nestjs/config';
+import { GoogleAuthService } from './shared/services/google-auth.service';
+import configuration from './config/configuration';
 
 @Global()
 @Module({
@@ -22,6 +25,7 @@ import { StorageService } from './shared/services/storage.service';
       },
     ]),
     CardsModule,
+    ConfigModule.forRoot({ load: [configuration] }),
   ],
   controllers: [AppController],
   providers: [
@@ -32,6 +36,7 @@ import { StorageService } from './shared/services/storage.service';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    GoogleAuthService,
   ],
   exports: [PrismaService, StorageService],
 })

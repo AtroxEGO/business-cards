@@ -10,13 +10,15 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_HOST")
 }
 
 model User {
   id       String @id @default(uuid())
   email    String @unique
   password String
+  // isGoogleAccount Boolean @default(false)
+  // externalId String
   card     Card?
 }
 

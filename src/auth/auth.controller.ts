@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 import { LoginDto, LoginResponseDto, loginSchema } from './dto/login.dto';
@@ -26,5 +28,16 @@ export class AuthController {
   @UsePipes(new ValidationPipe(loginSchema))
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @Get('/google/login')
+  loginByGoogle() {
+    return this.authService.initLoginByGoogle();
+  }
+
+  @Get('/google/oauth')
+  // @Redirect('http://localhost:4200', 301)
+  loginByGoogleOAuth(@Query('code') code: string) {
+    return this.authService.loginByGoogleOAuth(code);
   }
 }
