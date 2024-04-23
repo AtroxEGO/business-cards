@@ -6,7 +6,8 @@ import * as bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
 import { GoogleAuthService } from '../shared/services/google-auth.service';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -23,22 +24,13 @@ export class AuthService {
 
   async login(payload: LoginDto) {
     const { email, password } = payload;
-    const user = await this.prismaService.user.findUnique({ where: { email } });
+    const user = await this.userService.getUserByEmail(email);
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const tokenPayload = {
-      sub: user.id,
-      email: user.email,
-    };
-
-    return {
-      accessToken: await this.jwtService.signAsync(tokenPayload, {
-        expiresIn: '1h',
-      }),
-    };
+    return await this.getSessionToken(user);
   }
 
   async initLoginByGoogle() {
@@ -49,9 +41,10 @@ export class AuthService {
     );
 
     const authorizeUrl = oAuth2Client.generateAuthUrl({
-      access_type:
-        process.env.NODE_ENV === 'development' ? 'offline' : undefined,
-      scope: 'https://www.googleapis.com/auth/userinfo.profile openid',
+      // access_type:
+      // process.env.NODE_ENV === 'development' ? 'offline' : undefined,
+      scope:
+        'https://www.googleapis.com/auth/userinfo.profile openid https://www.googleapis.com/auth/userinfo.email',
       prompt: 'consent',
     });
 
@@ -72,9 +65,28 @@ export class AuthService {
       const userData = await this.googleAuthService.getUserData(accessToken);
       console.log(userData);
 
-      // const user = this.
+      const user = await this.userService.getUserByEmail(userData.email);
+
+      if (user) {
+        return await this.getSessionToken(user);
+      }
+
+      return { message: 'account doesnt exist yet!' };
     } catch (error) {
       throw error;
     }
+  }
+
+  async getSessionToken({ id, email }) {
+    const tokenPayload = {
+      sub: id,
+      email: email,
+    };
+
+    return {
+      accessToken: await this.jwtService.signAsync(tokenPayload, {
+        expiresIn: '1h',
+      }),
+    };
   }
 }

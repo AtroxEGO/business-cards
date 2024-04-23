@@ -23,6 +23,14 @@ export class UsersService {
     private jwtService: JwtService,
   ) {}
 
+  async getUserByEmail(email: string) {
+    return this.prismaService.user.findUnique({ where: { email } });
+  }
+
+  async getUserById(id: string) {
+    await this.prismaService.user.findUnique({ where: { id } });
+  }
+
   async createUser(payload: CreateUserDto) {
     const { email, password } = payload;
 
