@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
   }
 
   private async validateRequestToken(request: Request) {
-    const token = this.extractTokenFromHeader(request);
+    const token = request.cookies['sessionToken'];
 
     if (!token) {
       throw new UnauthorizedException();
@@ -32,17 +32,16 @@ export class AuthGuard implements CanActivate {
       });
       request['user'] = payload;
     } catch (error) {
-      console.log(error);
       throw new UnauthorizedException();
     }
 
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
-  }
+  // private extractTokenFromHeader(request: Request): string | undefined {
+  //   const [type, token] = request.headers.authorization?.split(' ') ?? [];
+  //   return type === 'Bearer' ? token : undefined;
+  // }
 }
 
 @Injectable()
@@ -69,7 +68,6 @@ export class PermissionGuard implements CanActivate {
       });
       request['user'] = payload;
     } catch (error) {
-      console.log(error);
       throw new UnauthorizedException();
     }
 

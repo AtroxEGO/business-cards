@@ -14,13 +14,13 @@ export const createUserSchema = z
     confirm: z.string().regex(passwordRegex, passwordComplexityMessage),
   })
   .required()
-  .refine(({ password, confirm: confirm }) => password === confirm, {
+  .refine(({ password, confirm }) => password === confirm, {
     path: ['confirm'],
     message: 'Passwords do not match',
   });
 
 export class CreateUserDto extends createZodDto(createUserSchema) {}
 export const CreateUserResponseZ = z.object({
-  access_token: z.string(),
+  sessionToken: z.string(),
 });
 export class CreateUserResponseDto extends createZodDto(CreateUserResponseZ) {}

@@ -8,10 +8,17 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../shared/services/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
 import { UserData } from './dto/user.interface';
 import { StorageService } from '../shared/services/storage.service';
 import { randomUUID } from 'crypto';
+import { Card } from '@prisma/client';
+import { TokenService } from '../shared/services/token.service';
+
+export type CreateExternalUserDto = {
+  email: string;
+  externalId: string;
+  cardData: Partial<Card>;
+};
 
 @Injectable()
 export class UsersService {
@@ -20,7 +27,7 @@ export class UsersService {
   constructor(
     private storageService: StorageService,
     private prismaService: PrismaService,
-    private jwtService: JwtService,
+    private tokenService: TokenService,
   ) {}
 
   async getUserByEmail(email: string) {
@@ -47,9 +54,7 @@ export class UsersService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const uuid = randomUUID();
-    const hashedUuid = bcrypt.hashSync(uuid, 1);
-    const slug = hashedUuid.slice(8, 16).replace(/[^\w\s-]/g, '');
+    const { uuid, slug } = this.generateUUID();
 
     const createdUser = await this.prismaService.user.create({
       data: {
@@ -72,18 +77,41 @@ export class UsersService {
 
     this.logger.debug(`Created new user: ${email}`);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _, id, ...tokenPayload } = createdUser;
+    const sessionToken = this.tokenService.getSessionToken(createdUser);
 
-    const accessToken = await this.jwtService.signAsync(
-      {
-        sub: id,
-        ...tokenPayload,
+    return { sessionToken };
+  }
+
+  async createExternalUser(payload: CreateExternalUserDto) {
+    const { email, externalId, cardData } = payload;
+
+    console.log(`Email: ${email}`);
+    console.log(`External ID: ${externalId}`);
+    console.log(`Card Data:`, cardData);
+
+    const { uuid, slug } = this.generateUUID();
+
+    const createdUser = await this.prismaService.user.create({
+      data: {
+        id: uuid,
+        email,
+        externalId: externalId,
+        card: {
+          create: {
+            ...cardData,
+            slug: slug,
+            socials: {
+              create: {
+                socialName: 'email',
+                value: email,
+              },
+            },
+          },
+        },
       },
-      { expiresIn: '60m' },
-    );
+    });
 
-    return { accessToken };
+    return createdUser;
   }
 
   async deleteUser(user: UserData, id: string) {
@@ -100,5 +128,13 @@ export class UsersService {
     }
 
     return { message: 'success' };
+  }
+
+  generateUUID() {
+    const uuid = randomUUID() as string;
+    const hashedUuid = bcrypt.hashSync(uuid, 1);
+    const slug = hashedUuid.slice(8, 16).replace(/[^\w\s-]/g, '');
+
+    return { uuid, slug };
   }
 }

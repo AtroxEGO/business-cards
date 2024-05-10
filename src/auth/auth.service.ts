@@ -1,20 +1,24 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../shared/services/prisma.service';
+import {
+  Inject,
+  Injectable,
+  UnauthorizedException,
+  forwardRef,
+} from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
 import { GoogleAuthService } from '../shared/services/google-auth.service';
-import { UsersService } from '../users/users.service';
-import { User } from '@prisma/client';
+import { CreateExternalUserDto, UsersService } from '../users/users.service';
+import { Response } from 'express';
+import { TokenService } from '../shared/services/token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prismaService: PrismaService,
+    @Inject(forwardRef(() => UsersService))
     private userService: UsersService,
-    private jwtService: JwtService,
+    private tokenService: TokenService,
     private configService: ConfigService,
     private googleAuthService: GoogleAuthService,
   ) {}
@@ -30,7 +34,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return await this.getSessionToken(user);
+    return { sessionToken: await this.tokenService.getSessionToken(user) };
   }
 
   async initLoginByGoogle() {
@@ -51,7 +55,7 @@ export class AuthService {
     return { status: 'ok', url: authorizeUrl };
   }
 
-  async loginByGoogleOAuth(code: string) {
+  async loginByGoogleOAuth(response: Response, code: string) {
     const oAuth2Client = new OAuth2Client(
       process.env.GOOGLE_OAUTH_CLIENT_ID,
       process.env.GOOGLE_OAUTH_SECRET_KEY,
@@ -61,32 +65,34 @@ export class AuthService {
     try {
       const res = await oAuth2Client.getToken(code);
       oAuth2Client.setCredentials(res.tokens);
-      const accessToken = oAuth2Client.credentials.access_token;
-      const userData = await this.googleAuthService.getUserData(accessToken);
+      const googleAccessToken = oAuth2Client.credentials.access_token;
+      const userData =
+        await this.googleAuthService.getUserData(googleAccessToken);
       console.log(userData);
-
       const user = await this.userService.getUserByEmail(userData.email);
 
       if (user) {
-        return await this.getSessionToken(user);
+        const userSessionToken = await this.tokenService.getSessionToken(user);
+        response.cookie('sessionToken', userSessionToken);
+        return;
       }
 
-      return { message: 'account doesnt exist yet!' };
+      console.log(`Account doesn't exist yet, creating...`);
+
+      const newUserData: CreateExternalUserDto = {
+        externalId: userData.sub,
+        email: userData.email,
+        cardData: { fullName: userData.name, photoUrl: userData.picture },
+      };
+
+      const createdUser =
+        await this.userService.createExternalUser(newUserData);
+
+      const sessionToken = await this.tokenService.getSessionToken(createdUser);
+      response.cookie('sessionToken', sessionToken);
+      return;
     } catch (error) {
       throw error;
     }
-  }
-
-  async getSessionToken({ id, email }) {
-    const tokenPayload = {
-      sub: id,
-      email: email,
-    };
-
-    return {
-      accessToken: await this.jwtService.signAsync(tokenPayload, {
-        expiresIn: '1h',
-      }),
-    };
   }
 }

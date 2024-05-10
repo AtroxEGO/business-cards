@@ -28,7 +28,7 @@ export const patchCardSchema = z.object({
       (color) => (color ? color.match(/^#(?:[0-9a-fA-F]{3}){1,2}$/) : true),
       invalidColorMessage,
     ),
-  bio: z.ostring(),
+  bio: z.ostring().nullable(),
   socials: z.array(
     z.object({
       socialName: z.enum(AllowedSocials),

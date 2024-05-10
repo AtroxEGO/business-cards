@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { patchNestjsSwagger } from '@anatine/zod-nestjs';
 import { ConfigService } from '@nestjs/config';
+import cookieParser from 'cookie-parser';
 
 // TODO: Docker
 // TODO: Tests
@@ -15,7 +16,11 @@ async function bootstrap() {
   // Start the App
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
-  app.enableCors();
+  app.use(cookieParser());
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    credentials: true,
+  });
 
   const swaggerOptions = new DocumentBuilder()
     .setTitle('Business Cards')
@@ -33,7 +38,6 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get('port');
-  console.log(port);
-  await app.listen(3000);
+  await app.listen(port);
 }
 bootstrap();
