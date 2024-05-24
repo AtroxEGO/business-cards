@@ -2,6 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
+export type TokenPayload = {
+  sub: string;
+  email: string;
+  iat: number;
+  exp: number;
+};
+
 @Injectable()
 export class TokenService {
   constructor(
@@ -18,5 +25,13 @@ export class TokenService {
     return await this.jwtService.signAsync(tokenPayload, {
       expiresIn: this.configService.get('sessionToken.expiration'),
     });
+  }
+
+  async extractPayloadFromToken(token: string): Promise<TokenPayload> {
+    if (!token) throw new Error('Token is Empty');
+
+    const payload = await this.jwtService.decode(token.replace('Bearer ', ''));
+
+    return payload;
   }
 }

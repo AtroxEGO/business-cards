@@ -14,33 +14,43 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  password String?
+  id         String  @id @default(uuid())
+  email      String  @unique
+  password   String?
   externalId String?
-  card     Card?
+  card       Card?
 }
 
 model Card {
   id             String         @id @default(uuid())
   owner          User           @relation(fields: [id], references: [id], onDelete: Cascade)
   slug           String         @unique
-  fullName       String?         
+  fullName       String?
   jobTitle       String?
-  address        String? // Remove?
   photoUrl       String?
   primaryColor   String         @default("#ffffff")
   secondaryColor String         @default("#000000")
   bio            String?
   socials        SocialDetail[]
+  visits         CardVisit[]
 }
 
 model SocialDetail {
   id         String @id @default(uuid())
-  card       Card   @relation(fields: [cardId], references: [id], onDelete: Cascade )
+  card       Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
   cardId     String
-  socialName String 
+  socialName String
   value      String
 
-  @@unique([cardId,socialName])
+  @@unique([cardId, socialName])
+}
+
+model CardVisit {
+  id          String @id @default(uuid())
+  card        Card   @relation(fields: [cardID], references: [id], onDelete: Cascade)
+  cardID      String
+  originIP    String
+  requesterID String?
+  countryCode String
+  createdAt   DateTime  @default(now())
 }

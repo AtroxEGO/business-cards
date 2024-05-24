@@ -8,9 +8,10 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { CardsModule } from './cards/cards.module';
 import { APP_GUARD } from '@nestjs/core';
 import { StorageService } from './shared/services/storage.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GoogleAuthService } from './shared/services/google-auth.service';
 import configuration from './config/configuration';
+import { TokenService } from './shared/services/token.service';
 
 @Global()
 @Module({
@@ -32,12 +33,14 @@ import configuration from './config/configuration';
     AppService,
     PrismaService,
     StorageService,
+    ConfigService,
+    TokenService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
     GoogleAuthService,
   ],
-  exports: [PrismaService, StorageService],
+  exports: [PrismaService, StorageService, TokenService, ConfigService],
 })
 export class AppModule {}

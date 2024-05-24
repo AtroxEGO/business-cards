@@ -10,4 +10,10 @@ export default () => ({
   sessionToken: {
     expiration: '1h',
   },
+  app: {
+    baseUrl: process.env.APP_URL || `http://localhost:4200`,
+  },
+  analytics: {
+    visitCooldown: 1, // In Hours
+  },
 });

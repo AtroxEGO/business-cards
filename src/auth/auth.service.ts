@@ -62,6 +62,10 @@ export class AuthService {
       this.googleAuthRedirectUrl,
     );
 
+    if (!code) {
+      return { url: this.configService.get('app.baseUrl') + '/sign-in' };
+    }
+
     try {
       const res = await oAuth2Client.getToken(code);
       oAuth2Client.setCredentials(res.tokens);

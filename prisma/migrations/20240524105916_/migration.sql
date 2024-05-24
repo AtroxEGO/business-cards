@@ -1,0 +1,2 @@
+-- AddForeignKey
+ALTER TABLE "CardVisit" ADD CONSTRAINT "CardVisit_cardID_fkey" FOREIGN KEY ("cardID") REFERENCES "Card"("id") ON DELETE CASCADE ON UPDATE CASCADE;
