@@ -76,7 +76,6 @@ export class AuthService {
       const googleAccessToken = oAuth2Client.credentials.access_token;
       const userData =
         await this.googleAuthService.getUserData(googleAccessToken);
-      console.log(userData);
       const user = await this.userService.getUserByEmail(userData.email);
 
       if (user) {

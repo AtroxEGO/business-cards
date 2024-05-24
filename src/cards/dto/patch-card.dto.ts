@@ -29,14 +29,16 @@ export const patchCardSchema = z.object({
       invalidColorMessage,
     ),
   bio: z.ostring().nullable(),
-  socials: z.array(
-    z.object({
-      socialName: z.enum(AllowedSocials),
-      value: z.union([
-        z.string().email('Invalid email.'),
-        z.string().url('Invalid link.'),
-      ]),
-    }),
+  socials: z.optional(
+    z.array(
+      z.object({
+        socialName: z.enum(AllowedSocials),
+        value: z.union([
+          z.string().email('Invalid email.'),
+          z.string().url('Invalid link.'),
+        ]),
+      }),
+    ),
   ),
 });
 

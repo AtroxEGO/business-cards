@@ -49,7 +49,7 @@ export class CardsService {
         data: {
           ...cardData,
           photoUrl,
-          socials: {
+          socials: socials && {
             deleteMany: {},
             createMany: { data: socials as any },
           },
