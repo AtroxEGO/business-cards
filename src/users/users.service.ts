@@ -13,6 +13,7 @@ import { StorageService } from '../shared/services/storage.service';
 import { randomUUID } from 'crypto';
 import { Card } from '@prisma/client';
 import { TokenService } from '../shared/services/token.service';
+import { Response } from 'express';
 
 export type CreateExternalUserDto = {
   email: string;
@@ -38,7 +39,7 @@ export class UsersService {
     await this.prismaService.user.findUnique({ where: { id } });
   }
 
-  async createUser(payload: CreateUserDto) {
+  async createUser(response: Response, payload: CreateUserDto) {
     const { email, password } = payload;
 
     const userNotUnique = await this.prismaService.user.findUnique({
@@ -79,7 +80,9 @@ export class UsersService {
 
     const sessionToken = this.tokenService.getSessionToken(createdUser);
 
-    return { sessionToken };
+    response.cookie('sessionCookie', sessionToken);
+
+    return { status: 'success' };
   }
 
   async createExternalUser(payload: CreateExternalUserDto) {

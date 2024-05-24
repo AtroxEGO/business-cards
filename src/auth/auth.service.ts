@@ -26,7 +26,7 @@ export class AuthService {
   googleAuthRedirectUrl =
     this.configService.get('api.baseUrl') + '/auth/google/oauth';
 
-  async login(payload: LoginDto) {
+  async login(response: Response, payload: LoginDto) {
     const { email, password } = payload;
     const user = await this.userService.getUserByEmail(email);
 
@@ -34,7 +34,11 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return { sessionToken: await this.tokenService.getSessionToken(user) };
+    const sessionToken = await this.tokenService.getSessionToken(user);
+
+    response.cookie('sessionToken', sessionToken);
+
+    return;
   }
 
   async initLoginByGoogle() {
@@ -52,7 +56,7 @@ export class AuthService {
       prompt: 'consent',
     });
 
-    return { status: 'ok', url: authorizeUrl };
+    return { status: 'success', url: authorizeUrl };
   }
 
   async loginByGoogleOAuth(response: Response, code: string) {

@@ -2,8 +2,7 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
-  HttpStatus,
+  Header,
   Post,
   Query,
   Redirect,
@@ -23,14 +22,17 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Throttle({ default: { ttl: 60000, limit: 5 } })
-  @HttpCode(HttpStatus.OK)
   @Post('login')
+  @Header('Cache-Control', 'no-cache')
   @ApiCreatedResponse({
     type: LoginResponseDto,
   })
   @UsePipes(new ValidationPipe(loginSchema))
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  login(
+    @Res({ passthrough: true }) response: Response,
+    @Body() loginDto: LoginDto,
+  ) {
+    return this.authService.login(response, loginDto);
   }
 
   @Get('/google/login')

@@ -4,6 +4,7 @@ import {
   Delete,
   Param,
   Post,
+  Res,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { User } from '../users/dto/user.decorator';
 import { UserData } from './dto/user.interface';
+import { Response } from 'express';
 
 @ApiTags('Users')
 @Controller('users')
@@ -29,8 +31,11 @@ export class UsersController {
     type: CreateUserResponseDto,
   })
   @UsePipes(new ValidationPipe(createUserSchema))
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.createUser(createUserDto);
+  async createUser(
+    @Res({ passthrough: true }) response: Response,
+    @Body() createUserDto: CreateUserDto,
+  ) {
+    return this.usersService.createUser(response, createUserDto);
   }
 
   @ApiBearerAuth('accessToken')
