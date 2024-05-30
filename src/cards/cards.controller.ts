@@ -8,6 +8,7 @@ import {
   Param,
   ParseFilePipe,
   Patch,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -40,8 +41,11 @@ export class CardsController {
   @ApiCookieAuth('sessionToken')
   @UseGuards(AuthGuard, OwnerGuard)
   @Get(':cardID/analytics')
-  getCardAnalytics(@Param('cardID') cardID: string) {
-    return this.cardAnalyticsService.getCardAnalytics(cardID);
+  getCardAnalytics(
+    @Param('cardID') cardID: string,
+    @Query('scope') scope: string,
+  ) {
+    return this.cardAnalyticsService.getCardAnalytics(cardID, scope);
   }
 
   @Get(':cardID')
