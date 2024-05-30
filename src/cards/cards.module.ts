@@ -17,6 +17,7 @@ export class CardsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(CardAnalyticsMiddleware)
-      .forRoutes({ path: 'cards/*', method: RequestMethod.GET });
+      .exclude({ path: 'cards/:cardID/analytics', method: RequestMethod.GET })
+      .forRoutes({ path: 'cards/:cardID', method: RequestMethod.GET });
   }
 }

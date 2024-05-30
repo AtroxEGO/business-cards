@@ -23,8 +23,7 @@ export class CardAnalyticsMiddleware implements NestMiddleware {
       ? (await this.tokenService.extractPayloadFromToken(requesterSessionToken))
           .sub
       : undefined;
-
-    const cardID = await this.getCardID(req.params[0]);
+    const cardID = await this.getCardID(req.params.cardID);
 
     next();
     // Don't count when requester is owner

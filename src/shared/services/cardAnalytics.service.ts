@@ -17,9 +17,18 @@ export class CardAnalyticsService {
   ) {}
   logger = new Logger(CardAnalyticsService.name);
 
+  // TODO: Add endpoint to fetch this data
   async addCardVisit(cardVisitData: CardVisit) {
     await this.prismaService.cardVisit.create({ data: cardVisitData });
     this.logger.debug('Visit was Created!');
+  }
+
+  async getCardAnalytics(cardID: string) {
+    const visits = await this.prismaService.cardVisit.findMany({
+      where: { cardID: cardID },
+    });
+
+    return { status: cardID, visits };
   }
 
   async isOnCooldown({ cardID, originIP, requesterID }: Partial<CardVisit>) {

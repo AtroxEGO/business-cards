@@ -25,26 +25,38 @@ import {
   patchSocialDto,
   patchSocialSchema,
 } from './dto/card-socials.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { CardAnalyticsService } from '../shared/services/cardAnalytics.service';
+import { OwnerGuard } from '../shared/guards/owner.guard';
 
 @ApiTags('Cards')
 @Controller('cards')
 export class CardsController {
-  constructor(private cardsService: CardsService) {}
+  constructor(
+    private cardsService: CardsService,
+    private cardAnalyticsService: CardAnalyticsService,
+  ) {}
 
-  @Get(':id')
-  getCard(@Param('id') id: string) {
-    return this.cardsService.getCard(id);
+  @ApiCookieAuth('sessionToken')
+  @UseGuards(AuthGuard, OwnerGuard)
+  @Get(':cardID/analytics')
+  getCardAnalytics(@Param('cardID') cardID: string) {
+    return this.cardAnalyticsService.getCardAnalytics(cardID);
   }
 
-  @ApiBearerAuth('accessToken')
+  @Get(':cardID')
+  getCard(@Param('cardID') cardID: string) {
+    return this.cardsService.getCard(cardID);
+  }
+
+  @ApiCookieAuth('sessionToken')
   @UseGuards(AuthGuard)
-  @Patch(':id')
+  @Patch(':cardID')
   @UseInterceptors(FileInterceptor('avatarFile'))
   patchCard(
     @Body(new ValidationPipe(patchCardSchema)) body: PatchCardDto,
     @User() user: UserData,
-    @Param('id') cardId: string,
+    @Param('cardID') cardID: string,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -56,28 +68,28 @@ export class CardsController {
     )
     file: Express.Multer.File,
   ) {
-    return this.cardsService.patchCard(body, file, user, cardId);
+    return this.cardsService.patchCard(body, file, user, cardID);
   }
 
-  @ApiBearerAuth('accessToken')
+  @ApiCookieAuth('sessionToken')
   @UseGuards(AuthGuard)
-  @Patch(':id/socials')
+  @Patch(':cardID/socials')
   upsertCardSocials(
     @Body(new ValidationPipe(patchSocialSchema)) body: patchSocialDto,
     @User() user: UserData,
-    @Param('id') cardId: string,
+    @Param('cardID') cardID: string,
   ) {
-    return this.cardsService.upsertSocials(body, user, cardId);
+    return this.cardsService.upsertSocials(body, user, cardID);
   }
 
-  @ApiBearerAuth('accessToken')
+  @ApiCookieAuth('sessionToken')
   @UseGuards(AuthGuard)
-  @Delete(':id/socials')
+  @Delete(':cardID/socials')
   deleteCardSocials(
     @Body(new ValidationPipe(deleteSocialSchema)) body: deleteSocialDto,
     @User() user: UserData,
-    @Param('id') cardId: string,
+    @Param('cardID') cardID: string,
   ) {
-    return this.cardsService.deleteSocials(body, user, cardId);
+    return this.cardsService.deleteSocials(body, user, cardID);
   }
 }

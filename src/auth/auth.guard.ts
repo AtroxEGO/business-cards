@@ -4,7 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
     const token = request.cookies['sessionToken'];
 
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Session token was not provided!');
     }
 
     try {
@@ -32,6 +32,10 @@ export class AuthGuard implements CanActivate {
       });
       request['user'] = payload;
     } catch (error) {
+      console.log(error);
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Session token expired!');
+      }
       throw new UnauthorizedException();
     }
 

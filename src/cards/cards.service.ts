@@ -23,7 +23,6 @@ export class CardsService {
       where: { OR: [{ id: id }, { slug: id }] },
       include: { socials: { select: { socialName: true, value: true } } },
     });
-
     if (!cardData) {
       throw new NotFoundException(`Card doesn't exist`);
     }
