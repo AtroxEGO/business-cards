@@ -117,9 +117,8 @@ export class CardAnalyticsService {
     const units = {
       d: 'setDate',
       h: 'setHours',
-      m: 'setMinutes',
       w: 'setDate', // weeks
-      M: 'setMonth', // months
+      m: 'setMonth', // months
       y: 'setFullYear', // years
     };
 
@@ -135,19 +134,16 @@ export class CardAnalyticsService {
     }
 
     switch (unit) {
-      case 'd':
-        date.setDate(date.getDate() - value);
-        break;
       case 'h':
         date.setHours(date.getHours() - value);
         break;
-      case 'm':
-        date.setMinutes(date.getMinutes() - value);
+      case 'd':
+        date.setDate(date.getDate() - value);
         break;
       case 'w':
         date.setDate(date.getDate() - value * 7);
         break;
-      case 'M':
+      case 'm':
         date.setMonth(date.getMonth() - value);
         break;
       case 'y':

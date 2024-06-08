@@ -8,7 +8,7 @@ export default () => ({
       process.env.API_URL || `http://localhost:${process.env.PORT || 3000}`,
   },
   sessionToken: {
-    expiration: '1h', //TODO: Set correct expiration
+    expiration: '1h',
   },
   app: {
     baseUrl: process.env.APP_URL || `http://localhost:4200`,

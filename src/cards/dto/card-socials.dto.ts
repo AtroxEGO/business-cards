@@ -8,6 +8,7 @@ const AllowedSocials = [
   'instagram',
   'email',
   'website',
+  'phone',
 ] as const;
 
 export const patchSocialSchema = z
