@@ -123,7 +123,15 @@ export class CardsService {
   private async uploadCardPhoto(file: Express.Multer.File, cardId: string) {
     if (!file) return undefined;
 
-    const convertedPhoto = await sharp(file.buffer).resize(512, 512).toBuffer();
+    const convertedPhoto = await sharp(file.buffer)
+      .resize({
+        width: 512,
+        height: 512,
+        fit: sharp.fit.inside,
+        withoutEnlargement: true,
+      })
+      .withMetadata()
+      .toBuffer();
 
     const photoUrl = await this.storageService.uploadFile(
       convertedPhoto,
