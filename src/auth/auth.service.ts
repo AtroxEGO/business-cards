@@ -43,6 +43,7 @@ export class AuthService {
   }
 
   async initLoginByGoogle() {
+    console.log(this.googleAuthRedirectUrl);
     const oAuth2Client = new OAuth2Client(
       process.env.GOOGLE_OAUTH_CLIENT_ID,
       process.env.GOOGLE_OAUTH_SECRET_KEY,

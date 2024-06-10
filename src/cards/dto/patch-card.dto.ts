@@ -1,5 +1,5 @@
 import { createZodDto } from '@anatine/zod-nestjs';
-import { ValidationErrors } from '../../shared/errors/validationErrors';
+import { ValidationErrorsCodes } from '../../shared/errors/errorCodes';
 import { z } from 'zod';
 
 const phoneRegex = new RegExp(
@@ -29,13 +29,13 @@ export const patchCardSchema = z
       .ostring()
       .refine(
         (color) => (color ? color.match(/^#(?:[0-9a-fA-F]{3}){1,2}$/) : true),
-        ValidationErrors.INVALID_COLOR,
+        ValidationErrorsCodes.INVALID_COLOR,
       ),
     secondaryColor: z
       .ostring()
       .refine(
         (color) => (color ? color.match(/^#(?:[0-9a-fA-F]{3}){1,2}$/) : true),
-        ValidationErrors.INVALID_COLOR,
+        ValidationErrorsCodes.INVALID_COLOR,
       ),
     bio: z.ostring().nullable(),
     socials: z.optional(
@@ -54,17 +54,17 @@ export const patchCardSchema = z
           case 'email':
             return z
               .string()
-              .email(ValidationErrors.INVALID_EMAIL)
+              .email(ValidationErrorsCodes.INVALID_EMAIL)
               .parse(value, { path: [`socials.${socialName}`] });
           case 'phone':
             return z
               .string()
-              .regex(phoneRegex, ValidationErrors.INVALID_PHONE)
+              .regex(phoneRegex, ValidationErrorsCodes.INVALID_PHONE)
               .parse(value, { path: [`socials.${socialName}`] });
           default:
             return z
               .string()
-              .regex(urlRegex, ValidationErrors.INVALID_LINK)
+              .regex(urlRegex, ValidationErrorsCodes.INVALID_LINK)
               .parse(value, { path: [`socials.${socialName}`] });
         }
       });

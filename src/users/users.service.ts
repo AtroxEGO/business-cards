@@ -78,7 +78,7 @@ export class UsersService {
 
     this.logger.debug(`Created new user: ${email}`);
 
-    const sessionToken = this.tokenService.getSessionToken(createdUser);
+    const sessionToken = await this.tokenService.getSessionToken(createdUser);
 
     response.cookie('sessionToken', sessionToken, {
       domain: '.polakiewicz.online',
