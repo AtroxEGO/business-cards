@@ -15,9 +15,8 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: ${NODE_ENV}
-      PORT: 3001
     ports:
-      - 3001:${PORT}
+      - ${PORT}:${PORT}
     depends_on:
       - postgres
     command: sh -c "npx prisma migrate dev --name dev && npm run start:prod"
