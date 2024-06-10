@@ -13,8 +13,11 @@ services:
     build: .
     container_name: my-card-backend
     restart: unless-stopped
+    ports:
+      - 3001: ${PORT}
     environment:
       NODE_ENV: ${NODE_ENV}
+      PORT: 3001
     depends_on:
       - postgres
     command: sh -c "npx prisma migrate dev --name dev && npm run start:prod"
