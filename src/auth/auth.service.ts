@@ -97,6 +97,8 @@ export class AuthService {
       const createdUser =
         await this.userService.createExternalUser(newUserData);
 
+      console.log(createdUser);
+
       const sessionToken = await this.tokenService.getSessionToken(createdUser);
       response.cookie('sessionToken', sessionToken);
       return { url: this.configService.get('app.baseUrl') };
