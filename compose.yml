@@ -14,7 +14,7 @@ services:
     container_name: my-card-backend
     restart: unless-stopped
     ports:
-      - 3001: ${PORT}
+      - 3001:${PORT}
     environment:
       NODE_ENV: ${NODE_ENV}
       PORT: 3001
