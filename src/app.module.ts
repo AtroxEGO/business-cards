@@ -26,7 +26,11 @@ import { TokenService } from './shared/services/token.service';
       },
     ]),
     CardsModule,
-    ConfigModule.forRoot({ load: [configuration] }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}` || '.env',
+      load: [configuration],
+    }),
   ],
   controllers: [AppController],
   providers: [

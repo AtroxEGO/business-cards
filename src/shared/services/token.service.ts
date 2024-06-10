@@ -16,6 +16,12 @@ export class TokenService {
     private configService: ConfigService,
   ) {}
 
+  async verifySessionToken(token: string) {
+    return this.jwtService.verifyAsync(token, {
+      secret: process.env.JWT_SECRET,
+    });
+  }
+
   async getSessionToken({ id, email }) {
     const tokenPayload = {
       sub: id,
@@ -23,6 +29,7 @@ export class TokenService {
     };
 
     return await this.jwtService.signAsync(tokenPayload, {
+      secret: process.env.JWT_SECRET,
       expiresIn: this.configService.get('sessionToken.expiration'),
     });
   }

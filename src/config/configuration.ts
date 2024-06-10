@@ -5,13 +5,13 @@ export default () => ({
   },
   api: {
     baseUrl:
-      process.env.API_URL || `http://localhost:${process.env.PORT || 3000}`,
+      process.env.API_HOST || `http://localhost:${process.env.PORT || 3000}`,
   },
   sessionToken: {
     expiration: '1h',
   },
   app: {
-    baseUrl: process.env.APP_URL || `http://localhost:4200`,
+    baseUrl: process.env.FRONTEND_HOST || `http://localhost:4200`,
   },
   analytics: {
     visitCooldown: 1, // In Hours

@@ -11,8 +11,6 @@ import { TokenService } from '../shared/services/token.service';
   imports: [
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '600h' },
     }),
     ConfigModule,
   ],
