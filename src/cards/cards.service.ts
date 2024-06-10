@@ -127,8 +127,8 @@ export class CardsService {
       .resize({
         width: 512,
         height: 512,
-        fit: sharp.fit.inside,
-        withoutEnlargement: true,
+        fit: sharp.fit.cover,
+        // withoutEnlargement: true,
       })
       .withMetadata()
       .toBuffer();

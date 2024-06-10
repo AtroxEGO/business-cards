@@ -12,6 +12,11 @@ import cookieParser from 'cookie-parser';
 // TODO: CI/CD
 // TODO: Caching
 
+// TODO: Title Translation
+// TODO: Fix image warping
+// TODO: Fix Visuals
+// TODO: Add loading indicatior on buttons
+
 async function bootstrap() {
   // Start the App
   const app = await NestFactory.create(AppModule);
