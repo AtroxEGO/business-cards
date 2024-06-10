@@ -80,7 +80,9 @@ export class UsersService {
 
     const sessionToken = this.tokenService.getSessionToken(createdUser);
 
-    response.cookie('sessionCookie', sessionToken);
+    response.cookie('sessionToken', sessionToken, {
+      domain: '.polakiewicz.online',
+    });
 
     return { status: 'success' };
   }
