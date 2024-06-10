@@ -41,7 +41,7 @@ export class AuthController {
   }
 
   @Get('/google/oauth')
-  @Redirect('http://localhost:4200', 301)
+  @Redirect()
   loginByGoogleOAuth(
     @Res({ passthrough: true }) response: Response,
     @Query('code') code: string,

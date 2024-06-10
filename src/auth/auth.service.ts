@@ -83,7 +83,7 @@ export class AuthService {
       if (user) {
         const userSessionToken = await this.tokenService.getSessionToken(user);
         response.cookie('sessionToken', userSessionToken);
-        return;
+        return { url: this.configService.get('app.baseUrl') };
       }
 
       console.log(`Account doesn't exist yet, creating...`);
@@ -99,7 +99,7 @@ export class AuthService {
 
       const sessionToken = await this.tokenService.getSessionToken(createdUser);
       response.cookie('sessionToken', sessionToken);
-      return;
+      return { url: this.configService.get('app.baseUrl') };
     } catch (error) {
       throw error;
     }
