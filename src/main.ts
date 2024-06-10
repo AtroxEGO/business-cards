@@ -5,7 +5,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { patchNestjsSwagger } from '@anatine/zod-nestjs';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
-import fs from 'fs';
 
 // TODO: Docker
 // TODO: Tests
