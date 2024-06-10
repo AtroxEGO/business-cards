@@ -33,10 +33,11 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
-
     const sessionToken = await this.tokenService.getSessionToken(user);
 
-    response.cookie('sessionToken', sessionToken);
+    response.cookie('sessionToken', sessionToken, {
+      domain: this.getCookieDomain(),
+    });
 
     return;
   }
@@ -101,5 +102,15 @@ export class AuthService {
     } catch (error) {
       throw error;
     }
+  }
+
+  getCookieDomain() {
+    if (process.env.NODE_ENV === 'development') {
+      return 'localhost';
+    }
+
+    const frontendUrl = this.configService.get('app.baseUrl') as string;
+    console.log(frontendUrl.split('.').slice(-2).join('.'));
+    return frontendUrl.split('.').slice(-2).join('.');
   }
 }
