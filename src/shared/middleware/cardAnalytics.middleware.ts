@@ -34,7 +34,7 @@ export class CardAnalyticsMiddleware implements NestMiddleware {
     const originIP =
       (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress;
 
-    const countryCode = await this.getCountryCode(originIP);
+    const countryCode = await this.getCountryCode(originIP.split(',')[0]);
 
     this.logger.debug(
       `

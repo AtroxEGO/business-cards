@@ -23,7 +23,7 @@ export class OwnerGuard implements CanActivate {
     const sessionToken = request.cookies['sessionToken'];
     const { sub: userID } =
       await this.tokenService.extractPayloadFromToken(sessionToken);
-
+    console.log(`Checking in guard if is owner: ${requestedID}, ${userID}`);
     return requestedID === userID;
   }
 
