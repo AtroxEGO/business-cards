@@ -93,7 +93,7 @@ export class AuthService {
       const newUserData: CreateExternalUserDto = {
         externalId: userData.sub,
         email: userData.email,
-        cardData: { fullName: userData.name, photoUrl: userData.picture },
+        cardData: { fullName: userData.name },
       };
 
       const createdUser =

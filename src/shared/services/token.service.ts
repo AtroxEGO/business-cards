@@ -27,7 +27,7 @@ export class TokenService {
       sub: id,
       email,
     };
-
+    console.log(`Creating session token for ${tokenPayload.sub}`);
     return await this.jwtService.signAsync(tokenPayload, {
       secret: process.env.JWT_SECRET,
       expiresIn: this.configService.get('sessionToken.expiration'),

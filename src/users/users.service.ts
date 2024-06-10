@@ -81,7 +81,7 @@ export class UsersService {
     const sessionToken = await this.tokenService.getSessionToken(createdUser);
 
     response.cookie('sessionToken', sessionToken, {
-      domain: '.polakiewicz.online',
+      domain: this.tokenService.getCookieDomain(),
     });
 
     return { status: 'success' };
