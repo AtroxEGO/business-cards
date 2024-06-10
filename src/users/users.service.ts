@@ -103,7 +103,6 @@ export class UsersService {
         externalId: externalId,
         card: {
           create: {
-            id: uuid,
             ...cardData,
             slug: slug,
             socials: {

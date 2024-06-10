@@ -41,4 +41,14 @@ export class TokenService {
 
     return payload;
   }
+
+  getCookieDomain() {
+    if (process.env.NODE_ENV === 'development') {
+      return 'localhost';
+    }
+
+    const frontendUrl = this.configService.get('app.baseUrl') as string;
+    console.log(frontendUrl.split('.').slice(-2).join('.'));
+    return frontendUrl.split('.').slice(-2).join('.');
+  }
 }

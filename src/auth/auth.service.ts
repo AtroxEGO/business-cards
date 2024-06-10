@@ -36,7 +36,7 @@ export class AuthService {
     const sessionToken = await this.tokenService.getSessionToken(user);
 
     response.cookie('sessionToken', sessionToken, {
-      domain: this.getCookieDomain(),
+      domain: this.tokenService.getCookieDomain(),
     });
 
     return;
@@ -82,7 +82,9 @@ export class AuthService {
 
       if (user) {
         const userSessionToken = await this.tokenService.getSessionToken(user);
-        response.cookie('sessionToken', userSessionToken);
+        response.cookie('sessionToken', userSessionToken, {
+          domain: this.tokenService.getCookieDomain(),
+        });
         return { url: this.configService.get('app.baseUrl') };
       }
 
@@ -100,20 +102,12 @@ export class AuthService {
       console.log(createdUser);
 
       const sessionToken = await this.tokenService.getSessionToken(createdUser);
-      response.cookie('sessionToken', sessionToken);
+      response.cookie('sessionToken', sessionToken, {
+        domain: this.tokenService.getCookieDomain(),
+      });
       return { url: this.configService.get('app.baseUrl') };
     } catch (error) {
       throw error;
     }
-  }
-
-  getCookieDomain() {
-    if (process.env.NODE_ENV === 'development') {
-      return 'localhost';
-    }
-
-    const frontendUrl = this.configService.get('app.baseUrl') as string;
-    console.log(frontendUrl.split('.').slice(-2).join('.'));
-    return frontendUrl.split('.').slice(-2).join('.');
   }
 }
