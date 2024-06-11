@@ -13,7 +13,6 @@ import cookieParser from 'cookie-parser';
 // TODO: Caching
 
 // TODO: Title Translation
-// TODO: Fix image warping
 // TODO: Fix Visuals
 // TODO: Add loading indicatior on buttons
 
