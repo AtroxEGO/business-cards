@@ -29,6 +29,7 @@ import {
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { CardAnalyticsService } from '../shared/services/cardAnalytics.service';
 import { OwnerGuard } from '../shared/guards/owner.guard';
+import { ValidationErrorsCodes } from '../shared/errors/errorCodes';
 
 @ApiTags('Cards')
 @Controller('cards')
@@ -64,8 +65,13 @@ export class CardsController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 8000000 }),
-          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({
+            maxSize: 4000000,
+            message: ValidationErrorsCodes.FILE_SIZE_TOO_BIG,
+          }),
+          new FileTypeValidator({
+            fileType: '.(png|jpeg|jpg)',
+          }),
         ],
         fileIsRequired: false,
       }),

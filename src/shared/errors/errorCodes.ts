@@ -9,6 +9,8 @@ export enum ValidationErrorsCodes {
   PASSWORD_LOWER_CASE_REQUIRED = 'errors.invalid.password.lowerCaseRequired',
   PASSWORD_NUMBER_REQUIRED = 'errors.invalid.password.numberRequired',
   PASSWORD_DO_NOT_MATCH = 'errors.invalid.password.doNotMatch',
+  FILE_SIZE_TOO_BIG = 'errors.invalid.file.sizeToBig',
+  INVALID_FILE_TYPE = 'errors.invalid.file.type',
 }
 
 export enum CardErrorCodes {

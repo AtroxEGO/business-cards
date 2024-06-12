@@ -124,11 +124,13 @@ export class CardsService {
     if (!file) return undefined;
 
     const convertedPhoto = await sharp(file.buffer)
+      .toFormat('webp')
       .resize({
         width: 512,
         height: 512,
         fit: sharp.fit.cover,
       })
+      .webp({ lossless: true, quality: 60, alphaQuality: 80, force: false })
       .withMetadata()
       .toBuffer();
 
