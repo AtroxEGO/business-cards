@@ -28,6 +28,8 @@ services:
       postgres:
         condition: service_healthy
     command: sh -c "npx prisma migrate dev --name dev && npm run start:prod"
+volumes:
+  postgres-volume:
 networks:
   default:
     external: true
