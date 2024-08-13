@@ -9,6 +9,10 @@ import { UserData } from '../users/dto/user.interface';
 import sharp from 'sharp';
 import { StorageService } from '../shared/services/storage.service';
 import { deleteSocialDto, patchSocialDto } from './dto/card-socials.dto';
+import {
+  CardErrorCodes,
+  GeneralErrorCodes,
+} from 'src/shared/errors/errorCodes';
 
 @Injectable()
 export class CardsService {
@@ -24,7 +28,7 @@ export class CardsService {
       include: { socials: { select: { socialName: true, value: true } } },
     });
     if (!cardData) {
-      throw new NotFoundException(`Card doesn't exist`);
+      throw new NotFoundException(CardErrorCodes.NOT_FOUND);
     }
 
     return cardData;
@@ -57,8 +61,7 @@ export class CardsService {
       });
       return { message: 'success', updatedCard };
     } catch (error) {
-      console.log(error);
-      throw new Error('Failed to update card.');
+      throw new Error(GeneralErrorCodes.UNEXPECTED);
     }
   }
 
