@@ -9,10 +9,7 @@ import { UserData } from '../users/dto/user.interface';
 import sharp from 'sharp';
 import { StorageService } from '../shared/services/storage.service';
 import { deleteSocialDto, patchSocialDto } from './dto/card-socials.dto';
-import {
-  CardErrorCodes,
-  GeneralErrorCodes,
-} from 'src/shared/errors/errorCodes';
+import { CardErrorCodes, GeneralErrorCodes } from '../shared/errors/errorCodes';
 
 @Injectable()
 export class CardsService {
